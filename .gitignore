@@ -1,0 +1,9 @@
+Library/
+Temp/
+Obj/
+Export/
+*.unityproj
+*.sln
+*.csproj
+*.suo
+*.userprefs
