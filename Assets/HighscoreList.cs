@@ -7,29 +7,44 @@ using System.Globalization;
 using System;
 using System.Text;
 
-struct ScoreEntry
-{
-	public string name;
-	public float time;
-}
-
-public class GameOverScreen : MonoBehaviour 
+public class HighscoreList : MonoBehaviour 
 {
 	public Text headerText, namesText, scoresText;
-
+	public GameObject highscoreList, wonButtons, lostButtons;
+	public InitialsScreen initialsScreen;
 
 	List<ScoreEntry> scoreEntries = new List<ScoreEntry>();
-	string filename { get { return Path.Combine(Application.persistentDataPath, App.round.levelName + "Scores.txt"); } }
+	string filename { get { return Path.Combine(Application.persistentDataPath, App.gameState.levelName + "Scores.txt"); } }
 
 	void Start () 
 	{
-		//gameOverText.text = App.round.time;
-		//infoText.text = App.round.text;
-		touchDownTime = Time.time + 1f;
+		if (App.gameState.levelWon)
+		{
+			highscoreList.SetActive(false);
+			initialsScreen.Show(App.gameState.playerName);
+			headerText.text = "You rock!";
+		}
+		else
+		{
+			highscoreList.SetActive(true);
+			headerText.text = "Game over";
+		}
 
+		wonButtons.SetActive(App.gameState.levelWon);
+		lostButtons.SetActive(!App.gameState.levelWon);
+		touchDownTime = Time.time + 1f;
+	}
+
+	public void Show(string name)
+	{
+		App.gameState.playerName = name;
+		
 		ReadScores();
+		AddScore(name, App.gameState.time);
 		SaveScores();
 		DisplayScores();
+		
+		highscoreList.SetActive(true);
 	}
 
 	void ReadScores()
@@ -86,22 +101,26 @@ public class GameOverScreen : MonoBehaviour
 	
 	void Update () 
 	{
-		foreach(var t in Engine.touches)
+		/*
+		if (highscoreList.activeSelf)
 		{
-			if(t.state == TouchState.Down)
+			foreach (var t in Engine.touches)
 			{
-				touchDownTime = Time.time;
-			}
-			else
-			if(t.state == TouchState.Up)
-			{
-				if (Time.time > touchDownTime + 1.5f || App.round.level >= Application.loadedLevel)
-					App.round.level = 0;
+				if (t.state == TouchState.Down)
+				{
+					touchDownTime = Time.time;
+				}
+				else
+					if (t.state == TouchState.Up)
+					{
+						if (Time.time > touchDownTime + 1.5f || App.globals.level >= Application.loadedLevel)
+							App.globals.level = 0;
 
-				Application.LoadLevel(App.round.level);
+						Application.LoadLevel(App.globals.level);
+					}
 			}
 		}
-
+		*/
 		/*
 		if ((Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))
 			touchDownTime = Time.time;
@@ -115,4 +134,24 @@ public class GameOverScreen : MonoBehaviour
 		}
 		*/
 	}
+
+	public void OnRetry()
+	{
+		Debug.Log("OnRetry");
+		Application.LoadLevel(App.gameState.level);
+	}
+
+	public void OnContinue()
+	{
+		Debug.Log("OnContinue");
+		App.gameState.level++;
+		Application.LoadLevel(App.gameState.level);
+	}
 }
+
+struct ScoreEntry
+{
+	public string name;
+	public float time;
+}
+

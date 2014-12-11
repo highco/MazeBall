@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
 public class InitialsScreen : MonoBehaviour
 {
+	public HighscoreList highscoreList;
+	public GameObject initialScreen;
+
 	public Text[] initials;
 	public float friction;
 	public float _deltaBoost;
@@ -22,17 +25,22 @@ public class InitialsScreen : MonoBehaviour
 
 	string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-	void Start ()
+	void Awake ()
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		initialScreen.SetActive(false);
+	}
 
-		SetInitials ("XM0");
-
-		Debug.Log (">>>>> initials " + GetInitials ());
+	public void Show(string name)
+	{
+		SetInitials(name);
+		initialScreen.SetActive(true);
 	}
 
 	void Update ()
 	{
+		if (!initialScreen.activeSelf) return;
+
 		//HandleTouch ();
 		HandleMouse ();
 
@@ -50,23 +58,25 @@ public class InitialsScreen : MonoBehaviour
 
 		var center = 160f;
 		
-		if (_currentX > center + 110) {
-			Debug.Log (">>>>> ok");
-		} else {
-			var index = 1;
+		var index = 1;
 
-			if (_currentX < (center - 25)) {
-				index = 0;
-			} else if (_currentX > (center + 25)) {
-				index = 2;
-			}
-
-			SetY (index, _deltaY);
-
-			if (_deltaY == 0f) {
-				CorrectPosition (index);
-			}
+		if (_currentX < (center - 64)) {
+			index = 0;
+		} else if (_currentX > (center)) {
+			index = 2;
 		}
+
+		SetY (index, _deltaY);
+
+		if (_deltaY == 0f) {
+			CorrectPosition (index);
+		}
+	}
+
+	public void OnOkClick()
+	{
+		initialScreen.SetActive(false);
+		highscoreList.Show(GetInitials());
 	}
 
 	void CorrectPosition (int index)
@@ -89,12 +99,16 @@ public class InitialsScreen : MonoBehaviour
 
 	void SetInitials (string chars)
 	{
-		for (int i = 0; i < chars.Length; i++) {
-			var c = chars [i];
-			var index = _chars.IndexOf (c);
-			_charIndices [i] = index;
+		if(string.IsNullOrEmpty(chars))
+			chars = "AAA";
 
-			var transform = initials [i].transform;
+		for (int i = 0; i < chars.Length; i++)
+		{
+			var c = chars[i];
+			var index = _chars.IndexOf(c);
+			_charIndices[i] = index;
+
+			var transform = initials[i].transform;
 			var pos = transform.localPosition;
 			pos.y = index * _part;
 			transform.localPosition = pos;

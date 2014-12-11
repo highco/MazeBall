@@ -5,17 +5,19 @@ using UnityEngine.UI;
 public enum Phase { Play, Refill };
 public enum GameMode { RotateOuter, Physics };
 
-public struct Round
+public struct GameState
 {
 	public string text;
-	public string time;
+	public float time;
 	public int level;
 	public string levelName;
+	public string playerName;
+	public bool levelWon;
 }
 
 public class App : MonoBehaviour 
 {
-	public static Round round;
+	public static GameState gameState;
 
 	public Sprite[] spritePrefabs;
 
@@ -49,21 +51,12 @@ public class App : MonoBehaviour
 		startTime = Time.time;
 		matches = 0;
 		maxMatches = FindObjectsOfType<Target>().Length;
-		round.levelName = Application.loadedLevelName;
+		gameState.levelName = Application.loadedLevelName;
 	}
 
-	public void GameOver(bool win)
+	public void GameOver(bool won)
 	{
-		round.time = text.text;
-		if (win)
-		{
-			round.text = "You rock!";
-			round.level++;
-		}
-		else
-		{
-			round.text = "Game Over";
-		}
+		gameState.levelWon = won;
 		Application.LoadLevel("GameOver");
 	}
 
@@ -77,7 +70,7 @@ public class App : MonoBehaviour
 
 		if (touch && lastTapTime > Time.time - .25f)
 		{
-			GameOver(win: false);
+			GameOver(won: false);
 		}
 
 		if (touch)
@@ -113,7 +106,8 @@ public class App : MonoBehaviour
 			background.transform.localEulerAngles = new Vector3(0, 0, currentAngle);
 		}
 
-		int time = Mathf.FloorToInt(Time.time - startTime);
-		text.text = string.Format("{0:D2}:{1:D2}", time / 60, time % 60);
+		float time = Time.time - startTime;
+		text.text = string.Format("{0:D2}:{1:D2}", (int)(time / 60), (int)(time % 60));
+		gameState.time = time;
 	}
 }

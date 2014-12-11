@@ -14,6 +14,6 @@ public class Villain : MonoBehaviour
 	{
 		var gem = collider.gameObject.GetComponent<Ball>();
 		if (gem != null)
-			app.GameOver(win:false);
+			app.GameOver(won:false);
 	}
 }
