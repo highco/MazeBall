@@ -4,54 +4,71 @@ using UnityEngine.UI;
 
 public enum Phase { Play, Refill };
 public enum GameMode { RotateOuter, Physics };
-public enum AppMode { Game, GameOver };
+
+public struct Round
+{
+	public string text;
+	public string time;
+	public int level;
+}
 
 public class App : MonoBehaviour 
 {
+	public static Round round;
+
 	public Sprite[] spritePrefabs;
 
 	public GameMode gameMode;
 	public float keyboardFactor;
 	public float accelerometerFactor;
 	public GameObject background;
-	public Text text, gameOverText;
+	public Text text;
 	public float rotationMinSpeed, rotationMaxSpeed;
 	public float rotationThreshold;
 
-	public GameObject gameScreen;
-	public GameObject gameOverScreen;
-
-	public Phase phase;
-	float currentAngle;
-	float targetAngle;
-	float startTime;
-	AppMode appMode;
-	public int matches;
-	public int maxMatches;
 	public bool changeToNextColorAfterMatch;
+	public int maxLevels;
+
+	[HideInInspector]
+	public Phase phase;
+	[HideInInspector]
+	float currentAngle;
+	[HideInInspector]
+	float targetAngle;
+	[HideInInspector]
+	float startTime;
+	[HideInInspector]
+	public int matches;
+	[HideInInspector]
+	public int maxMatches;
 
 	void Start () 
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-		StartRound();		
+		StartRound();
 	}
 
 	void StartRound()
 	{
 		phase = Phase.Play;
 		startTime = Time.time;
-		gameScreen.active = true;
-		gameOverScreen.active = false;
-		appMode = AppMode.Game;
 		matches = 0;
+		maxMatches = FindObjectsOfType<Target>().Length;
 	}
 
-	public void GameOver()
+	public void GameOver(bool win)
 	{
-		gameOverText.text = text.text;
-		gameScreen.active = false;
-		gameOverScreen.active = true;
-		appMode = AppMode.GameOver;
+		round.time = text.text;
+		if (win)
+		{
+			round.text = "You rock!";
+			round.level++;
+		}
+		else
+		{
+			round.text = "Game Over";
+		}
+		Application.LoadLevel("GameOver");
 	}
 
 	float lastTapTime;
@@ -60,18 +77,10 @@ public class App : MonoBehaviour
 	{
 		bool touch = (Engine.touches.Count > 0 && Engine.touches[0].state == TouchState.Down);
 
-		if (appMode == AppMode.Game)
-		{
-			UpdateGame();
+		UpdateGame();
 
-			if (touch && lastTapTime > Time.time - .25f)
-				GameOver();
-		}
-		else
-		if (appMode == AppMode.GameOver)
-		{
-			if (touch) Application.LoadLevel(0);
-		}
+		if (touch && lastTapTime > Time.time - .25f)
+			GameOver(win: false);
 
 		if (touch) lastTapTime = Time.time;
 	}
