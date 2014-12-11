@@ -27,10 +27,10 @@ public class GameOverScreen : MonoBehaviour
 			else
 			if(t.state == TouchState.Up)
 			{
-				if (Time.time < touchDownTime + 2f/* && App.round.level < Application.loadedLevel*/)
-					Application.LoadLevel(App.round.level);
-				else
-					Application.LoadLevel(0);
+				if (Time.time > touchDownTime + 1.5f || App.round.level >= Application.loadedLevel)
+					App.round.level = 0;
+
+				Application.LoadLevel(App.round.level);
 			}
 		}
 
