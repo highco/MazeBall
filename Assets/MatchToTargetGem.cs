@@ -31,14 +31,16 @@ public class MatchToTargetGem : MonoBehaviour
 				if (color < 5)
 					SetColor(++color);
 				else
-					app.GameOver();				
+					app.GameOver(win: true);				
 			}
 			else
 			{
 				Destroy(gameObject);
 
+
+
 				if (++app.matches >= app.maxMatches)
-					app.GameOver();
+					app.GameOver(win: true);
 			}
 		}
 	}
