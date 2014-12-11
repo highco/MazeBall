@@ -29,18 +29,12 @@ public class App : MonoBehaviour
 	public bool changeToNextColorAfterMatch;
 	public int maxLevels;
 
-	[HideInInspector]
-	public Phase phase;
-	[HideInInspector]
-	float currentAngle;
-	[HideInInspector]
-	float targetAngle;
-	[HideInInspector]
-	float startTime;
-	[HideInInspector]
-	public int matches;
-	[HideInInspector]
-	public int maxMatches;
+	[HideInInspector] public Phase phase;
+	[HideInInspector] float currentAngle;
+	[HideInInspector] float targetAngle;
+	[HideInInspector] float startTime;
+	[HideInInspector] public int matches;
+	[HideInInspector] public int maxMatches;
 
 	void Start () 
 	{
@@ -80,9 +74,14 @@ public class App : MonoBehaviour
 		UpdateGame();
 
 		if (touch && lastTapTime > Time.time - .25f)
+		{
 			GameOver(win: false);
+		}
 
-		if (touch) lastTapTime = Time.time;
+		if (touch)
+		{
+			lastTapTime = Time.time;
+		}
 	}
 	
 	void UpdateGame() 

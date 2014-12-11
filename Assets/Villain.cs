@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Villan : MonoBehaviour 
+public class Villain : MonoBehaviour 
 {
 	App app;
 
@@ -12,7 +12,7 @@ public class Villan : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D collider)
 	{
-		var gem = collider.gameObject.GetComponent<MatchToTargetGem>();
+		var gem = collider.gameObject.GetComponent<Ball>();
 		if (gem != null)
 			app.GameOver(win:false);
 	}
