@@ -10,6 +10,7 @@ public struct Round
 	public string text;
 	public string time;
 	public int level;
+	public string levelName;
 }
 
 public class App : MonoBehaviour 
@@ -48,6 +49,7 @@ public class App : MonoBehaviour
 		startTime = Time.time;
 		matches = 0;
 		maxMatches = FindObjectsOfType<Target>().Length;
+		round.levelName = Application.loadedLevelName;
 	}
 
 	public void GameOver(bool win)

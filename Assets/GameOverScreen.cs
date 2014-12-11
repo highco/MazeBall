@@ -1,17 +1,85 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
+using System.Collections.Generic;
+using System.Globalization;
+using System;
+using System.Text;
+
+struct ScoreEntry
+{
+	public string name;
+	public float time;
+}
 
 public class GameOverScreen : MonoBehaviour 
 {
-	public Text gameOverText;
-	public Text infoText;
-	
+	public Text headerText, namesText, scoresText;
+
+
+	List<ScoreEntry> scoreEntries = new List<ScoreEntry>();
+	string filename { get { return Path.Combine(Application.persistentDataPath, App.round.levelName + "Scores.txt"); } }
+
 	void Start () 
 	{
-		gameOverText.text = App.round.time;
-		infoText.text = App.round.text;
+		//gameOverText.text = App.round.time;
+		//infoText.text = App.round.text;
 		touchDownTime = Time.time + 1f;
+
+		ReadScores();
+		SaveScores();
+		DisplayScores();
+	}
+
+	void ReadScores()
+	{
+		try
+		{
+			scoreEntries.Clear();
+			var text = File.ReadAllText(filename);
+			foreach(string line in text.Split('\n'))
+			{
+				var part = line.Split(' ');
+				float time;
+				float.TryParse(part[1], NumberStyles.Any, CultureInfo.InvariantCulture, out time);
+				scoreEntries.Add(new ScoreEntry { name = part[0], time = time });
+			}
+		}
+		catch(Exception) {}
+	}
+
+	void AddScore(string name, float time)
+	{
+		scoreEntries.Add(new ScoreEntry { name = name, time = time });
+		scoreEntries.Sort((a, b) => a.time.CompareTo(b.time));
+	}
+
+	void SaveScores()
+	{
+		var writer = new StreamWriter(File.OpenWrite(filename));
+		foreach(var e in scoreEntries)
+		{
+			writer.WriteLine(e.name + " " + e.time);
+		}
+		writer.Close();
+	}
+
+	void DisplayScores()
+	{
+		string names = "";
+		string scores = "";
+		int i = 0;
+
+		foreach(var e in scoreEntries)
+		{
+			names += e.name + "\n";
+			scores += String.Format("{0}:{1:D2}\n", (int)(e.time/60), (int)(e.time % 60));
+			if (++i > 5) return;
+		}
+
+		namesText.text = names;
+		scoresText.text = scores;
 	}
 
 	float touchDownTime;
