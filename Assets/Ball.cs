@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MatchToTargetGem : MonoBehaviour
+public class Ball : MonoBehaviour
 {
 	public int color;
 	App app;
@@ -29,18 +29,22 @@ public class MatchToTargetGem : MonoBehaviour
 			if (app.changeToNextColorAfterMatch)
 			{
 				if (color < 5)
+				{
 					SetColor(++color);
+				}
 				else
-					app.GameOver(win: true);				
+				{
+					app.GameOver(win: true);
+				}
 			}
 			else
 			{
 				Destroy(gameObject);
 
-
-
 				if (++app.matches >= app.maxMatches)
+				{
 					app.GameOver(win: true);
+				}
 			}
 		}
 	}

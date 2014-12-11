@@ -7,15 +7,7 @@ public class Labyrith : MonoBehaviour
 
 	public GameObject[] segmentPrefabs;
 	public GameObject[] wallPrefabs;
-
 	const int segmentCount = 15;
-	bool[,] horizontalWalls = new bool[segmentCount, 2];
-	bool[,] vertialWalls = new bool[segmentCount + 1, 2];
-
-	void Start () 
-	{
-	
-	}
 
 	public void Create()
 	{
@@ -42,11 +34,6 @@ public class Labyrith : MonoBehaviour
 				segment.transform.localPosition = Vector3.zero;
 				segment.transform.localEulerAngles = new Vector3(0, 0, -360.0f * i / segmentCount);
 			}
-	}
-
-	void Update () 
-	{
-	
 	}
 
 	void Clear()
