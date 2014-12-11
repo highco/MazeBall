@@ -11,22 +11,40 @@ public class GameOverScreen : MonoBehaviour
 	{
 		gameOverText.text = App.round.time;
 		infoText.text = App.round.text;
-		touchDownTime = Time.time;
+		touchDownTime = Time.time + 1f;
 	}
 
 	float touchDownTime;
 	
 	void Update () 
 	{
+		foreach(var t in Engine.touches)
+		{
+			if(t.state == TouchState.Down)
+			{
+				touchDownTime = Time.time;
+			}
+			else
+			if(t.state == TouchState.Up)
+			{
+				if (Time.time < touchDownTime + 2f/* && App.round.level < Application.loadedLevel*/)
+					Application.LoadLevel(App.round.level);
+				else
+					Application.LoadLevel(0);
+			}
+		}
+
+		/*
 		if ((Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))
 			touchDownTime = Time.time;
 
-		if ((Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended) || Input.GetMouseButtonUp(0))
+		if (Time.time > touchDownTime && ((Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended) || Input.GetMouseButtonUp(0)))
 		{
 			if (Time.time < touchDownTime + 1f && App.round.level < Application.loadedLevel)
 				Application.LoadLevel(App.round.level);
 			else
 				Application.LoadLevel(0);
 		}
+		*/
 	}
 }
