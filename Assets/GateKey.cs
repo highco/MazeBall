@@ -6,8 +6,6 @@ public class GateKey : MonoBehaviour
 
 	void OnTriggerEnter2D (Collider2D collider)
 	{
-		Debug.Log (collider.name);
-
 		gate.Open ();
 		Destroy (gameObject);
 	}
