@@ -10,36 +10,37 @@ public class InitialsScreen : MonoBehaviour
 
 	public Text[] initials;
 	public float friction;
-	public float _deltaBoost;
+	public float snapSpeed;
 
 	Vector2 _startPosition = new Vector2 ();
 	float _deltaY = 0;
 	float _currentX = 0;
+
 	const float _height = 3313f;
 	const int _charCount = 36;
 	const float _part = _height / _charCount;
+	const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 	IList<int> _charIndices = new List<int> {
 		0, 0, 0
 	};
 
-	string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
 	void Awake ()
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
-		initialScreen.SetActive(false);
+		initialScreen.SetActive (false);
 	}
 
-	public void Show(string name)
+	public void Show (string name)
 	{
-		SetInitials(name);
-		initialScreen.SetActive(true);
+		SetInitials (name);
+		initialScreen.SetActive (true);
 	}
 
 	void Update ()
 	{
-		if (!initialScreen.activeSelf) return;
+		if (!initialScreen.activeSelf)
+			return;
 
 		//HandleTouch ();
 		HandleMouse ();
@@ -52,12 +53,7 @@ public class InitialsScreen : MonoBehaviour
 			_deltaY = 0;
 		}
 
-		if (_deltaY != 0) {
-			//Debug.Log (">>>>> delta " + _deltaY);
-		}
-
 		var center = 160f;
-		
 		var index = 1;
 
 		if (_currentX < (center - 64)) {
@@ -68,15 +64,15 @@ public class InitialsScreen : MonoBehaviour
 
 		SetY (index, _deltaY);
 
-		if (_deltaY == 0f) {
+		if (_deltaY == 0f && !Input.anyKey) {
 			CorrectPosition (index);
 		}
 	}
 
-	public void OnOkClick()
+	public void OnOkClick ()
 	{
-		initialScreen.SetActive(false);
-		highscoreList.Show(GetInitials());
+		initialScreen.SetActive (false);
+		highscoreList.Show (GetInitials ());
 	}
 
 	void CorrectPosition (int index)
@@ -94,21 +90,40 @@ public class InitialsScreen : MonoBehaviour
 
 		selectorPos.y = charIndex * _part;
 		_charIndices [index] = charIndex;
-		trans.localPosition = selectorPos;
+		//trans.localPosition = selectorPos;
+
+		var distance = trans.localPosition.y - selectorPos.y;
+
+		if (distance < -snapSpeed) {
+			SetY (index, snapSpeed);
+		} else if (distance > snapSpeed) {
+			SetY (index, -snapSpeed);
+		} else {
+			trans.localPosition = selectorPos;
+		}
+
+
+
+//		Debug.Log (">>>>>> " + _correctionY);
+//
+//		if (_correctionY < -friction || _correctionY > friction) {
+//			SetY (index, _correctionY);
+//		} else {
+//			trans.localPosition = selectorPos;
+//		}
 	}
 
 	void SetInitials (string chars)
 	{
-		if(string.IsNullOrEmpty(chars))
+		if (string.IsNullOrEmpty (chars))
 			chars = "AAA";
 
-		for (int i = 0; i < chars.Length; i++)
-		{
-			var c = chars[i];
-			var index = _chars.IndexOf(c);
-			_charIndices[i] = index;
+		for (int i = 0; i < chars.Length; i++) {
+			var c = chars [i];
+			var index = _chars.IndexOf (c);
+			_charIndices [i] = index;
 
-			var transform = initials[i].transform;
+			var transform = initials [i].transform;
 			var pos = transform.localPosition;
 			pos.y = index * _part;
 			transform.localPosition = pos;
@@ -146,7 +161,7 @@ public class InitialsScreen : MonoBehaviour
 	{
 		if (Input.anyKeyDown) {
 			_startPosition = Input.mousePosition;
-			_currentX = Input.mousePosition.x;
+			_currentX = _startPosition.x;
 		}
 
 		if (Input.anyKey) {
