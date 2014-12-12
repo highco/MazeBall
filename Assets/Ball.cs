@@ -9,7 +9,7 @@ public class Ball : MonoBehaviour
 	void Start()
 	{
 		app = FindObjectOfType<App>();
-		SetColor(color);
+		//SetColor(color);
 	}
 
 	void SetColor(int color)
@@ -24,8 +24,13 @@ public class Ball : MonoBehaviour
 		
 		if(target != null && target.color == color)
 		{
-			Destroy(collider.gameObject);
+			if (app.dissolveEffect != null)
+			{
+				var dissolve = Instantiate(app.dissolveEffect) as GameObject;
+				dissolve.transform.position = transform.position;
+			}
 
+			Destroy(collider.gameObject);
 			if (app.changeToNextColorAfterMatch)
 			{
 				if (color < 5)

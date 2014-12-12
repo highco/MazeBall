@@ -28,6 +28,7 @@ public class App : MonoBehaviour
 	public Text text;
 	public float rotationMinSpeed, rotationMaxSpeed;
 	public float rotationThreshold;
+	public GameObject dissolveEffect;
 
 	public bool changeToNextColorAfterMatch;
 	public int maxLevels;
