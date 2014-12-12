@@ -34,7 +34,7 @@ public class Ball : MonoBehaviour
 				}
 				else
 				{
-					app.GameOver(win: true);
+					app.GameOver(won: true);
 				}
 			}
 			else
@@ -43,7 +43,7 @@ public class Ball : MonoBehaviour
 
 				if (++app.matches >= app.maxMatches)
 				{
-					app.GameOver(win: true);
+					app.GameOver(won: true);
 				}
 			}
 		}
