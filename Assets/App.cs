@@ -61,10 +61,30 @@ public class App : MonoBehaviour
 		Application.LoadLevel("GameOver");
 	}
 
-	float lastTapTime;
+	float touchDownTime;
 
 	void Update()
 	{
+		foreach (var t in Engine.touches)
+		{
+			if (t.state == TouchState.Down)
+			{
+				if (touchDownTime > Time.time - .25f)
+				{
+					GameOver(won: false);
+				}
+				touchDownTime = Time.time;
+			}
+			else
+			if (t.state == TouchState.Up)
+			{
+				if (Time.time > touchDownTime + 1.5f)
+					Application.LoadLevel("Notification");
+			}
+		}
+
+		UpdateGame();
+		/*
 		bool touch = (Engine.touches.Count > 0 && Engine.touches[0].state == TouchState.Down);
 
 		UpdateGame();
@@ -78,6 +98,7 @@ public class App : MonoBehaviour
 		{
 			lastTapTime = Time.time;
 		}
+		 */
 	}
 	
 	void UpdateGame() 
