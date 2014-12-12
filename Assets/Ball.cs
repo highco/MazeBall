@@ -48,14 +48,4 @@ public class Ball : MonoBehaviour
 			}
 		}
 	}
-
-	Vector3 dir;
-
-	void Update()
-	{
-		if (rigidbody2D.velocity.magnitude > .1)
-			dir = rigidbody2D.velocity;
-		var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-		transform.localEulerAngles = new Vector3(0, 0, angle - 90);
-	}
 }

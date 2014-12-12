@@ -22,12 +22,11 @@ public class HighscoreList : MonoBehaviour
 		{
 			highscoreList.SetActive(false);
 			initialsScreen.Show(App.gameState.playerName);
-			headerText.text = "You rock!";
+			headerText.text = ScoreEntry.timeToString(App.gameState.time);
 		}
 		else
 		{
 			highscoreList.SetActive(true);
-			headerText.text = "Game over";
 		}
 
 		wonButtons.SetActive(App.gameState.levelWon);
@@ -66,7 +65,29 @@ public class HighscoreList : MonoBehaviour
 
 	void AddScore(string name, float time)
 	{
-		scoreEntries.Add(new ScoreEntry { name = name, time = time });
+		if (name != "AAA")
+		{
+			ScoreEntry scoreEntry = null;
+
+			foreach (var entry in scoreEntries)
+				if (entry.name == name)
+				{
+					scoreEntry = entry;
+					break;
+				}
+
+			if (scoreEntry != null)
+			{
+				if (time < scoreEntry.time)
+				{
+					scoreEntry.time = time;
+				}
+			}
+			else
+			{
+				scoreEntries.Add(new ScoreEntry { name = name, time = time });
+			}
+		}
 		scoreEntries.Sort((a, b) => a.time.CompareTo(b.time));
 	}
 
@@ -89,7 +110,7 @@ public class HighscoreList : MonoBehaviour
 		foreach(var e in scoreEntries)
 		{
 			names += e.name + "\n";
-			scores += String.Format("{0}:{1:D2}\n", (int)(e.time/60), (int)(e.time % 60));
+			scores += ScoreEntry.timeToString(e.time) + "\n";
 			if (++i > 5) return;
 		}
 
@@ -101,7 +122,6 @@ public class HighscoreList : MonoBehaviour
 	
 	void Update () 
 	{
-		/*
 		if (highscoreList.activeSelf)
 		{
 			foreach (var t in Engine.touches)
@@ -111,16 +131,16 @@ public class HighscoreList : MonoBehaviour
 					touchDownTime = Time.time;
 				}
 				else
-					if (t.state == TouchState.Up)
+				if (t.state == TouchState.Up)
+				{
+					if (Time.time > touchDownTime + 2)
 					{
-						if (Time.time > touchDownTime + 1.5f || App.globals.level >= Application.loadedLevel)
-							App.globals.level = 0;
-
-						Application.LoadLevel(App.globals.level);
+						App.gameState.level = 0;
+						OnContinue();
 					}
+				}
 			}
 		}
-		*/
 		/*
 		if ((Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))
 			touchDownTime = Time.time;
@@ -145,13 +165,18 @@ public class HighscoreList : MonoBehaviour
 	{
 		Debug.Log("OnContinue");
 		App.gameState.level++;
+
+		if (App.gameState.level >= Application.loadedLevel)
+			App.gameState.level = 0;
+
 		Application.LoadLevel(App.gameState.level);
 	}
 }
 
-struct ScoreEntry
+class ScoreEntry
 {
 	public string name;
 	public float time;
+	public static string timeToString(float time) { return string.Format("{0}:{1:D2}", (int)(time / 60), (int)(time % 60)); }
 }
 
