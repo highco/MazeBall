@@ -18,6 +18,11 @@ public class HighscoreList : MonoBehaviour
 
 	void Start () 
 	{
+		ReadScores();
+		wonButtons.SetActive(App.gameState.levelWon);
+		lostButtons.SetActive(!App.gameState.levelWon);
+		touchDownTime = Time.time + 1f;
+
 		if (App.gameState.levelWon)
 		{
 			highscoreList.SetActive(false);
@@ -27,21 +32,17 @@ public class HighscoreList : MonoBehaviour
 		else
 		{
 			highscoreList.SetActive(true);
+			DisplayScores(highlightUserScore:false);
 		}
-
-		wonButtons.SetActive(App.gameState.levelWon);
-		lostButtons.SetActive(!App.gameState.levelWon);
-		touchDownTime = Time.time + 1f;
 	}
 
 	public void Show(string name)
 	{
 		App.gameState.playerName = name;
 		
-		ReadScores();
 		AddScore(name, App.gameState.time);
 		SaveScores();
-		DisplayScores();
+		DisplayScores(highlightUserScore: true);
 		
 		highscoreList.SetActive(true);
 	}
@@ -101,7 +102,7 @@ public class HighscoreList : MonoBehaviour
 		writer.Close();
 	}
 
-	void DisplayScores()
+	void DisplayScores(bool highlightUserScore)
 	{
 		string names = "";
 		string scores = "";
@@ -109,8 +110,19 @@ public class HighscoreList : MonoBehaviour
 
 		foreach(var e in scoreEntries)
 		{
-			names += e.name + "\n";
-			scores += ScoreEntry.timeToString(e.time) + "\n";
+			var scoreString = ScoreEntry.timeToString(e.time);
+
+			if (highlightUserScore && e.name == App.gameState.playerName)
+			{
+				names += "<color=#000000>" + e.name + "</color>\n";
+				scores += "<color=#000000>" + scoreString + "</color>\n";
+			}
+			else
+			{
+				names += e.name + "\n";
+				scores += scoreString + "\n";
+			}
+
 			if (++i > 5) return;
 		}
 
@@ -133,10 +145,10 @@ public class HighscoreList : MonoBehaviour
 				else
 				if (t.state == TouchState.Up)
 				{
-					if (Time.time > touchDownTime + 2)
+					if (Time.time > touchDownTime + 1f)
 					{
 						App.gameState.level = 0;
-						OnContinue();
+						Application.LoadLevel(0);
 					}
 				}
 			}
