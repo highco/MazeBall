@@ -178,7 +178,7 @@ public class HighscoreList : MonoBehaviour
 		Debug.Log("OnContinue");
 		App.gameState.level++;
 
-		if (App.gameState.level >= Application.loadedLevel)
+		if (App.gameState.level >= Application.loadedLevel-1)
 			App.gameState.level = 0;
 
 		Application.LoadLevel(App.gameState.level);
