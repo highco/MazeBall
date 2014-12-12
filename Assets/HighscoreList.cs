@@ -112,7 +112,7 @@ public class HighscoreList : MonoBehaviour
 		{
 			var scoreString = ScoreEntry.timeToString(e.time);
 
-			if (highlightUserScore && e.name == App.gameState.playerName)
+			if (highlightUserScore && e.name == App.gameState.playerName && e.time == App.gameState.time)
 			{
 				names += "<color=#000000>" + e.name + "</color>\n";
 				scores += "<color=#000000>" + scoreString + "</color>\n";
