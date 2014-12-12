@@ -30,7 +30,7 @@ public class Ball : MonoBehaviour
 			scale.x = scale.y = scale.x - 0.1f;
 			transform.localScale = scale;
 
-			if (color.a == 0) {
+			if (color.a <= 0) {
 				Destroy (gameObject);
 			}
 		}
@@ -54,11 +54,10 @@ public class Ball : MonoBehaviour
 					app.GameOver (won: true);
 				}
 			} else {
-				_destroyed = true;
-				//Destroy(gameObject);
-
 				if (++app.matches >= app.maxMatches) {
 					app.GameOver (won: true);
+				} else {
+					_destroyed = true;
 				}
 			}
 		}
