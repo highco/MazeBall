@@ -5,7 +5,7 @@ public class NotifcationDemo : MonoBehaviour
 {
 	void Start () 
 	{
-	
+		touchDownTime = float.MaxValue;
 	}
 
 	float touchDownTime;
@@ -19,14 +19,14 @@ public class NotifcationDemo : MonoBehaviour
 				touchDownTime = Time.time;
 			}
 			else
-				if (t.state == TouchState.Up)
+			if (t.state == TouchState.Up)
+			{
+				if (Time.time > touchDownTime + 1f)
 				{
-					if (Time.time > touchDownTime + 1f)
-					{
-						App.gameState.level = 0;
-						Application.LoadLevel(0);
-					}
+					App.gameState.level = 0;
+					Application.LoadLevel(0);
 				}
+			}
 		}		
 	}
 }
