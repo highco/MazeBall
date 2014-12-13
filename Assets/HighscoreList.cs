@@ -25,6 +25,8 @@ public class HighscoreList : MonoBehaviour
 
 		if (App.gameState.levelWon)
 		{
+			headerText.text = ScoreEntry.timeToString(App.gameState.time);
+
 			if (!String.IsNullOrEmpty(App.gameState.playerName))
 			{
 				Show(App.gameState.playerName);
@@ -33,7 +35,6 @@ public class HighscoreList : MonoBehaviour
 			{
 				highscoreList.SetActive(false);
 				initialsScreen.Show(App.gameState.playerName);
-				headerText.text = ScoreEntry.timeToString(App.gameState.time);
 			}
 		}
 		else
@@ -186,7 +187,7 @@ public class HighscoreList : MonoBehaviour
 		Debug.Log("OnContinue");
 		App.gameState.level++;
 
-		if (App.gameState.level >= Application.loadedLevel-1)
+		if (App.gameState.level >= Application.loadedLevel)
 			App.gameState.level = 0;
 
 		Application.LoadLevel(App.gameState.level);
