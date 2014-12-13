@@ -78,8 +78,8 @@ public class App : MonoBehaviour
 			else
 			if (t.state == TouchState.Up)
 			{
-				if (Time.time > touchDownTime + 1.5f)
-					Application.LoadLevel("Notification");
+				//if (Time.time > touchDownTime + 1.5f)
+				//	Application.LoadLevel("Notification");
 			}
 		}
 

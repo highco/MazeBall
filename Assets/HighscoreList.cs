@@ -25,9 +25,16 @@ public class HighscoreList : MonoBehaviour
 
 		if (App.gameState.levelWon)
 		{
-			highscoreList.SetActive(false);
-			initialsScreen.Show(App.gameState.playerName);
-			headerText.text = ScoreEntry.timeToString(App.gameState.time);
+			if (!String.IsNullOrEmpty(App.gameState.playerName))
+			{
+				Show(App.gameState.playerName);
+			}
+			else
+			{
+				highscoreList.SetActive(false);
+				initialsScreen.Show(App.gameState.playerName);
+				headerText.text = ScoreEntry.timeToString(App.gameState.time);
+			}
 		}
 		else
 		{
@@ -148,6 +155,7 @@ public class HighscoreList : MonoBehaviour
 					if (Time.time > touchDownTime + 1f)
 					{
 						App.gameState.level = 0;
+						App.gameState.playerName = "";
 						Application.LoadLevel(0);
 					}
 				}
